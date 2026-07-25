@@ -1,0 +1,40 @@
+#
+# Pre-commit hooks
+#
+minimum_pre_commit_version: "2.20.0"
+default_install_hook_types:
+  - pre-commit
+  - pre-push
+  - commit-msg
+
+repos:
+  # Commitizen for commit message standardization
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.10.0
+    hooks:
+    - id: commitizen
+      name: Commitizen Commit Message Hook
+      stages: [commit-msg]
+
+  - repo: local
+    hooks:
+    - id: reuse-annotate
+      name: REUSE Annotate
+      entry: reuse
+      args: [annotate, -c, "All contributors", -l, "GPL-2.0-or-later", --merge-copyrights ]
+      language: python
+      pass_filenames: true
+      types_or: ["c++", "c", "qml", "cmake"]
+
+    - id: format_qml
+      name: Format QML files
+      entry: qmlformat6 -i -l native -w 4
+      types_or: ["qml"]
+      language: system
+
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v21.1.7  # Use the latest Clang-Format version
+    hooks:
+      - id: clang-format
+        name: Format C/C++ files with Clang-Format
+        files: \.(c|cpp|h|hpp)$  # File extensions to format     additional_dependencies: ["reuse"]
