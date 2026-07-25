@@ -37,4 +37,4 @@ repos:
     hooks:
       - id: clang-format
         name: Format C/C++ files with Clang-Format
-        files: \.(c|cpp|h|hpp)$  # File extensions to format     additional_dependencies: ["reuse"]
+        files: \.(c|cpp|h|hpp)$  # File extensions to format

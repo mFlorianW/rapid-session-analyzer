@@ -12,7 +12,7 @@ macro(setup_compile_flags)
 
     check_c_compiler_flag(-Wextra HAS_WEXTRA)
     if(HAS_WEXTRA)
-        add_compile_options(-Wall) # -Wextra -Wshadow -Wnon-virtual-dtor -pedantic)
+        add_compile_options(-Wextra)
     endif()
 
     check_c_compiler_flag(-pedantic HAS_WPEDANTIC)
