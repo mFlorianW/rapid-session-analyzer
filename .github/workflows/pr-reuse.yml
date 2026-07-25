@@ -1,0 +1,15 @@
+name: REUSE Compliance Check
+
+on:
+  workflow_call:
+
+jobs:
+  REUSE_Compliance:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+          fetch-depth: 0
+    - name: REUSE Compliance Check
+      uses: fsfe/reuse-action@v5

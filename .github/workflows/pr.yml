@@ -1,0 +1,28 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+   pull-requests: write
+   checks: write
+
+jobs:
+  Build_Desktop:
+    uses: ./.github/workflows/pr-build.yml
+
+  Build_Desktop_Status_Check:
+    runs-on: ubuntu-latest
+    needs: [Build_Desktop]
+    if: always()
+    steps:
+      - name: Check Desktop Build Status
+        run: |
+          if [ "${{ needs.Build_Desktop.result }}" != "success" ]; then
+            echo "Desktop builds failed"
+            exit 1
+          fi
+
+  REUSE_Compliance:
+    uses: ./.github/workflows/pr-reuse.yml

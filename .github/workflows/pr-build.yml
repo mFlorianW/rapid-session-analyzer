@@ -1,0 +1,60 @@
+name: Pullrequest Build And Test
+
+on:
+  workflow_call:
+
+jobs:
+  Build_Desktop:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [Clang, GCC]
+        qt: [6.10.1]
+        include:
+          - compiler: GCC
+            cxx: g++
+            cc: gcc
+          - compiler: Clang
+            cxx: clang++
+            cc: clang
+    permissions:
+      checks: write
+      pull-requests: write
+    name: Desktop_${{ matrix.qt }}-${{ matrix.compiler }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+          fetch-depth: 0
+    - name: Install Qt
+      uses: ./.github/actions/linux-install-qt
+    - name: Setup default compiler
+      run: |
+        sudo update-alternatives --install /usr/bin/cc cc /usr/bin/${{ matrix.cc }} 100
+        sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/${{ matrix.cxx }} 100
+        echo "Compiler CC: $(cc --version)"
+        echo "Compiler CXX: $(c++ --version)"
+    - name: Create Test report directory
+      run: mkdir -p ${PWD}/reports
+    - name: Build and Test
+      run: |
+        cmake --preset debug
+        cmake --build --preset debug --target all --parallel
+        ctest --preset debug --parallel --output-on-failure --output-junit ${PWD}/reports/test-results_Desktop_${{ matrix.qt }}-${{ matrix.compiler }}.xml
+      env:
+        QT_QPA_PLATFORM: offscreen
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: (!cancelled())
+      with:
+        files: |
+          reports/*.xml
+        comment_mode: "failures"
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: Test Results Desktop ${{ matrix.qt }}-${{ matrix.compiler }}
+        path: reports/*.xml
