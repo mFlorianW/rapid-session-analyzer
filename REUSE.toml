@@ -1,0 +1,25 @@
+version = 1
+SPDX-PackageName = "rapid-session-analyzer"
+SPDX-PackageSupplier = "Florian Weßel <florianwessel@gmx.net>"
+SPDX-PackageDownloadLocation = "https://github.com/mFlorianW/rapid-session-analyzer"
+
+[[annotations]]
+path = [
+    "REUSE.toml",
+    ".gitignore",
+    "**.json",
+    "**.md",
+    ".github/**",
+    ".pre-commit-config.yaml",
+    ".cz.toml",
+    ".changelog.md.j2",
+    "**/.csv",
+    "**/CMakeLists.txt",
+    ".clang-format",
+    ".clang-tidy",
+    ".editorconfig",
+    "**/.qmlls.ini"
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 All contributors"
+SPDX-License-Identifier = "GPL-2.0-or-later"
