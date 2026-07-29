@@ -76,8 +76,4 @@ add_subdirectory(testhelper)
 add_subdirectory(workflow)
 add_subdirectory(RapidControls)
 
-if(ENABLE_TEST)
-    add_subdirectory(tests)
-endif()
-
 feature_summary(WHAT ALL)

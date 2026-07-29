@@ -28,3 +28,13 @@ target_link_libraries(RapidSessionAnalyzerCommon
     PUBLIC
         Qt6::Core
 )
+
+if(ENABLE_TEST)
+    add_executable(test_common_domain_model tests/DomainModelJsonTest.cpp)
+    add_test(NAME test_common_domain_model COMMAND test_common_domain_model)
+    target_link_libraries(test_common_domain_model PRIVATE
+        Qt6::Test
+        RapidSessionAnalyzer::Common
+        RapidSessionAnalyzer::TestHelper
+    )
+endif()
