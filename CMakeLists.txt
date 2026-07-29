@@ -64,6 +64,7 @@ endif()
 
 add_subdirectory(common)
 add_subdirectory(testhelper)
+add_subdirectory(workflow)
 
 if(ENABLE_TEST)
     include(CTest)

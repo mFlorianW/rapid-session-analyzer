@@ -9,3 +9,11 @@ target_link_libraries(test_common_domain_model PRIVATE
     RapidSessionAnalyzer::Common
     RapidSessionAnalyzer::TestHelper
 )
+
+add_executable(test_workflow_filesystem_storage ../workflow/tests/FilesystemStorageTest.cpp)
+add_test(NAME test_workflow_filesystem_storage COMMAND test_workflow_filesystem_storage)
+target_link_libraries(test_workflow_filesystem_storage PRIVATE
+    Qt6::Test
+    RapidSessionAnalyzer::Workflow
+    RapidSessionAnalyzer::TestHelper
+)
