@@ -65,15 +65,18 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     setup_sanitizers()
 endif()
 
+if(ENABLE_TEST)
+    include(CTest)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
+    enable_testing()
+endif()
+
 add_subdirectory(common)
 add_subdirectory(testhelper)
 add_subdirectory(workflow)
 add_subdirectory(RapidControls)
 
 if(ENABLE_TEST)
-    include(CTest)
-    find_package(Qt6 REQUIRED COMPONENTS Test)
-    enable_testing()
     add_subdirectory(tests)
 endif()
 

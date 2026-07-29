@@ -22,3 +22,25 @@ target_link_libraries(RapidControls
         Qt6::Quick
         Qt6::QuickControls2
 )
+
+if(ENABLE_TEST)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
+
+    add_executable(test_rapid_controls_import tests/RapidControlsImportTest.cpp)
+    add_test(NAME test_rapid_controls_import COMMAND test_rapid_controls_import)
+
+    target_link_libraries(test_rapid_controls_import PRIVATE
+        Qt6::Qml
+        Qt6::Quick
+        Qt6::QuickControls2
+        Qt6::Test
+        RapidControls
+        RapidControlsplugin
+    )
+
+    qt_import_qml_plugins(test_rapid_controls_import)
+
+    set_tests_properties(test_rapid_controls_import PROPERTIES
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
+    )
+endif()

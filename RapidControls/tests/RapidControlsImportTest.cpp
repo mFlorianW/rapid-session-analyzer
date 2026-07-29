@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <QCoreApplication>
+#include <QDir>
 #include <QQuickItem>
 #include <QQmlComponent>
 #include <QQmlEngine>
-#include <QCoreApplication>
-#include <QDir>
 #include <QTest>
 #include <memory>
 
