@@ -62,11 +62,14 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     setup_sanitizers()
 endif()
 
+add_subdirectory(common)
+add_subdirectory(testhelper)
+
 if(ENABLE_TEST)
     include(CTest)
-    find_package(Qt6 REQUIRED Test)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
     enable_testing()
     add_subdirectory(tests)
-endif(ENABLE_TEST)
+endif()
 
 feature_summary(WHAT ALL)
