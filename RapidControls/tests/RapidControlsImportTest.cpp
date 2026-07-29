@@ -7,6 +7,7 @@
 #include <QQuickItem>
 #include <QQmlComponent>
 #include <QQmlEngine>
+#include <QUrl>
 #include <QTest>
 #include <memory>
 
@@ -19,16 +20,10 @@ private Q_SLOTS:
     {
         QQmlEngine engine;
         engine.addImportPath(QDir{QCoreApplication::applicationDirPath()}.absoluteFilePath(QStringLiteral("../qml")));
-        QQmlComponent component{&engine};
-        component.setData(R"qml(
-import QtQuick
-import Rapid.Controls
-
-PrimaryButton {
-    text: "Analyze"
-}
-)qml",
-            QUrl{QStringLiteral("file:///RapidControlsImportTest.qml")});
+        QQmlComponent component{
+            &engine,
+            QUrl::fromLocalFile(QStringLiteral("%1/tests/RapidControlsImportTest.qml").arg(QT_TESTCASE_SOURCEDIR)),
+        };
 
         std::unique_ptr<QObject> instance{component.create()};
 
