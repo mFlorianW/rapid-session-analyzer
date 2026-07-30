@@ -39,6 +39,9 @@ ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
 find_package(Qt6 REQUIRED COMPONENTS
     Core
+    Qml
+    Quick
+    QuickControls2
 )
 
 if(QT_KNOWN_POLICY_QTP0001)
@@ -64,9 +67,13 @@ endif()
 
 if(ENABLE_TEST)
     include(CTest)
-    find_package(Qt6 REQUIRED Test)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
     enable_testing()
-    add_subdirectory(tests)
-endif(ENABLE_TEST)
+endif()
+
+add_subdirectory(common)
+add_subdirectory(testhelper)
+add_subdirectory(workflow)
+add_subdirectory(RapidControls)
 
 feature_summary(WHAT ALL)

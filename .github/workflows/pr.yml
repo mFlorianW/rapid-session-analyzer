@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/pr-build.yml
 
   Build_Desktop_Status_Check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [Build_Desktop]
     if: always()
     steps:
