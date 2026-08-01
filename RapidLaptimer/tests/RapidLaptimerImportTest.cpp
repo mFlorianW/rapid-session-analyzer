@@ -35,6 +35,10 @@ private Q_SLOTS:
         QVERIFY(item != nullptr);
         QCOMPARE(instance->property("connectButtonText").toString(), QStringLiteral("Connect"));
         QCOMPARE(instance->property("addressPlaceholderText").toString(), QStringLiteral("http://rapid-rusty.local"));
+        QCOMPARE(instance->property("addressInputAccessibleName").toString(), QStringLiteral("Laptimer address"));
+        QCOMPARE(instance->property("connectCommandAccessibleName").toString(), QStringLiteral("Connect to Laptimer"));
+        QCOMPARE(instance->property("sessionListAccessibleName").toString(), QStringLiteral("Available Sessions"));
+        QCOMPARE(instance->property("statusFeedbackAccessibleName").toString(), QStringLiteral("Laptimer status"));
         QVERIFY(item->implicitWidth() > 0.0);
         QVERIFY(item->implicitHeight() > 0.0);
     }
