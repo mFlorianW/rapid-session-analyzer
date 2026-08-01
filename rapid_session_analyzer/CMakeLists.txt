@@ -21,5 +21,5 @@ target_link_libraries(rapid_session_analyzer
 qt_import_qml_plugins(rapid_session_analyzer)
 
 set_target_properties(rapid_session_analyzer PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
