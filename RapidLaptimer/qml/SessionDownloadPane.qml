@@ -79,7 +79,6 @@ Pane {
                 required property var modelData
 
                 width: sessionList.width
-                implicitHeight: sessionRow.implicitHeight + Theme.spacingMedium
 
                 Row {
                     id: sessionRow
