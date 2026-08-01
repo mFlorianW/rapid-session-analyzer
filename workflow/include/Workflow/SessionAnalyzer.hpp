@@ -10,6 +10,7 @@
 #include <QVector>
 #include <QTime>
 #include <QString>
+#include <QMap>
 
 namespace RapidSessionAnalyzer::Workflow
 {
@@ -25,6 +26,10 @@ class SessionAnalyzer
 {
 public:
     [[nodiscard]] static QVector<LapOverview> analyze(Common::Session const& session) noexcept;
+
+    // Group laps by track name across multiple sessions. The returned map's key is the track name
+    // and the value is a vector with one entry per session: each entry is the session's LapOverviews.
+    [[nodiscard]] static QMap<QString, QVector<QVector<LapOverview>>> compareByTrack(QList<Common::Session> const& sessions) noexcept;
 };
 
 } // namespace RapidSessionAnalyzer::Workflow

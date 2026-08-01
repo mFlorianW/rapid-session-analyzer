@@ -24,4 +24,21 @@ QVector<LapOverview> SessionAnalyzer::analyze(Common::Session const& session) no
     return result;
 }
 
+QMap<QString, QVector<QVector<LapOverview>>> SessionAnalyzer::compareByTrack(QList<Common::Session> const& sessions) noexcept
+{
+    QMap<QString, QVector<QVector<LapOverview>>> result;
+
+    for (auto const& session : sessions) {
+        const QString trackName = session.getTrack().name;
+        const auto overviews = analyze(session);
+        // Ensure there is a slot for this session in the vector
+        if (!result.contains(trackName)) {
+            result.insert(trackName, {});
+        }
+        result[trackName].append(overviews);
+    }
+
+    return result;
+}
+
 } // namespace RapidSessionAnalyzer::Workflow
