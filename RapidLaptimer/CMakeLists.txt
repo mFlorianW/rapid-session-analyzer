@@ -8,6 +8,8 @@ qt_add_qml_module(RapidLaptimer
     STATIC
     QML_FILES
         qml/SessionDownloadPane.qml
+        qml/AppShell.qml
+        qml/SessionLibraryPane.qml
     SOURCES
         include/RapidLaptimer/LaptimerSessionBrowser.hpp
         src/LaptimerSessionBrowser.cpp
