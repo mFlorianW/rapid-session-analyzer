@@ -61,7 +61,7 @@ private Q_SLOTS:
         QVERIFY((*sessionLibraryPane)->property("sessionBrowser").value<QObject*>() != nullptr);
     }
 
-    void navigatesBetweenTopLevelPagesWithoutPeerHistory()
+    void replacesTheActiveTopLevelPage()
     {
         QQmlEngine engine;
         engine.addImportPath(QDir{QCoreApplication::applicationDirPath()}.absoluteFilePath(QStringLiteral("../qml")));
@@ -83,9 +83,13 @@ private Q_SLOTS:
         QCOMPARE(instance->property("currentPageTitle").toString(), QStringLiteral("Download Sessions"));
 
         QVERIFY(QMetaObject::invokeMethod(
+            instance.get(), "navigateTo", Q_ARG(QVariant, QVariant{QStringLiteral("about")})));
+        QCOMPARE(instance->property("currentDestination").toString(), QStringLiteral("about"));
+        QCOMPARE(instance->property("currentPageTitle").toString(), QStringLiteral("About"));
+
+        QVERIFY(QMetaObject::invokeMethod(
             instance.get(), "navigateTo", Q_ARG(QVariant, QVariant{QStringLiteral("library")})));
         QCOMPARE(instance->property("currentDestination").toString(), QStringLiteral("library"));
-        QCOMPARE(instance->property("topLevelPageCount").toInt(), 1);
 
         instance->setProperty("width", 600);
         QCoreApplication::processEvents();

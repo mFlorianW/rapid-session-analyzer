@@ -15,15 +15,16 @@ ApplicationWindow {
     height: 768
     title: qsTr("Rapid Session Analyzer")
     property bool compactNavigation: width < 720
-    property string currentDestination: ["library", "download", "about"][pageStack.currentIndex]
-    property string currentPageTitle: ["Session Library", "Download Sessions", "About"][pageStack.currentIndex]
+    property string currentDestination: navigationModel.get(pageStack.currentIndex).destination
+    property string currentPageTitle: qsTr(navigationModel.get(pageStack.currentIndex).label)
     property string navigationMode: compactNavigation ? "compact" : "expanded"
-    property int topLevelPageCount: 1
 
     function navigateTo(destination) {
-        const index = ["library", "download", "about"].indexOf(destination);
-        if (index !== -1) {
-            pageStack.currentIndex = index;
+        for (let index = 0; index < navigationModel.count; ++index) {
+            if (navigationModel.get(index).destination === destination) {
+                pageStack.currentIndex = index;
+                return;
+            }
         }
     }
 
@@ -82,6 +83,7 @@ ApplicationWindow {
             implicitWidth: compact ? 40 : 216
             implicitHeight: 40
             onClicked: app.navigateTo(destination)
+            Accessible.name: qsTr(label)
 
             contentItem: RowLayout {
                 spacing: Theme.spacingSmall
@@ -105,6 +107,8 @@ ApplicationWindow {
                 color: parent.selected
                     ? Theme.usesDarkAppearance ? "#3B4B5C" : "#DCEBFA"
                     : parent.hovered ? Theme.surfaceMutedColor : "transparent"
+                border.width: parent.activeFocus ? 2 : 0
+                border.color: Theme.focusColor
             }
 
             ToolTip.visible: hovered && compact
