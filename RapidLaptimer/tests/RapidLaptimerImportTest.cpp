@@ -60,6 +60,52 @@ private Q_SLOTS:
         QVERIFY(sessionLibraryPane != descendants.cend());
         QVERIFY((*sessionLibraryPane)->property("sessionBrowser").value<QObject*>() != nullptr);
     }
+
+    void navigatesBetweenTopLevelPagesWithoutPeerHistory()
+    {
+        QQmlEngine engine;
+        engine.addImportPath(QDir{QCoreApplication::applicationDirPath()}.absoluteFilePath(QStringLiteral("../qml")));
+        QQmlComponent component{
+            &engine,
+            QUrl{QStringLiteral("qrc:/qt/qml/RapidLaptimer/qml/AppShell.qml")},
+        };
+
+        std::unique_ptr<QObject> instance{component.create()};
+
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        QVERIFY(instance != nullptr);
+        QCOMPARE(instance->property("currentDestination").toString(), QStringLiteral("library"));
+        QCOMPARE(instance->property("currentPageTitle").toString(), QStringLiteral("Session Library"));
+
+        QVERIFY(QMetaObject::invokeMethod(
+            instance.get(), "navigateTo", Q_ARG(QVariant, QVariant{QStringLiteral("download")})));
+        QCOMPARE(instance->property("currentDestination").toString(), QStringLiteral("download"));
+        QCOMPARE(instance->property("currentPageTitle").toString(), QStringLiteral("Download Sessions"));
+
+        QVERIFY(QMetaObject::invokeMethod(
+            instance.get(), "navigateTo", Q_ARG(QVariant, QVariant{QStringLiteral("library")})));
+        QCOMPARE(instance->property("currentDestination").toString(), QStringLiteral("library"));
+        QCOMPARE(instance->property("topLevelPageCount").toInt(), 1);
+
+        instance->setProperty("width", 600);
+        QCoreApplication::processEvents();
+        QCOMPARE(instance->property("navigationMode").toString(), QStringLiteral("compact"));
+    }
+
+    void loadsAboutPane()
+    {
+        QQmlEngine engine;
+        engine.addImportPath(QDir{QCoreApplication::applicationDirPath()}.absoluteFilePath(QStringLiteral("../qml")));
+        QQmlComponent component{
+            &engine,
+            QUrl{QStringLiteral("qrc:/qt/qml/RapidLaptimer/qml/AboutPane.qml")},
+        };
+
+        std::unique_ptr<QObject> instance{component.create()};
+
+        QVERIFY2(component.isReady(), qPrintable(component.errorString()));
+        QVERIFY(instance != nullptr);
+    }
 };
 
 QTEST_MAIN(RapidLaptimerImportTest)
