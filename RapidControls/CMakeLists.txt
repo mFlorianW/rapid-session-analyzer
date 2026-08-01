@@ -10,8 +10,17 @@ qt_add_qml_module(RapidControls
     STATIC
     QML_FILES
         qml/DialogSurface.qml
+        qml/FluentIcon.qml
+        qml/FluentTextField.qml
         qml/PrimaryButton.qml
         qml/Theme.qml
+    RESOURCES
+        qml/icons/download.svg
+        qml/icons/download-dark.svg
+        qml/icons/info.svg
+        qml/icons/info-dark.svg
+        qml/icons/library.svg
+        qml/icons/library-dark.svg
 )
 
 add_library(RapidSessionAnalyzer::Controls ALIAS RapidControls)

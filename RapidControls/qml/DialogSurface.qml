@@ -9,10 +9,10 @@ Dialog {
     id: control
 
     modal: true
-    padding: 16
+    padding: Theme.spacingLarge
 
     background: Rectangle {
-        radius: 12
+        radius: 8
         color: Theme.surfaceColor
         border.width: 1
         border.color: Theme.borderColor
