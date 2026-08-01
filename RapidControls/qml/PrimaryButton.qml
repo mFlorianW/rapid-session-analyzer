@@ -8,22 +8,25 @@ import QtQuick.Controls
 Button {
     id: control
 
-    padding: 12
-    font.pointSize: 11
-    font.bold: true
+    implicitHeight: Theme.controlHeight
+    leftPadding: Theme.spacingMedium
+    rightPadding: Theme.spacingMedium
+    topPadding: Theme.spacingExtraSmall
+    bottomPadding: Theme.spacingExtraSmall
+    hoverEnabled: true
 
     contentItem: Text {
         text: control.text
-        color: Theme.primaryTextColor
+        color: control.enabled ? Theme.primaryTextColor : Theme.disabledTextColor
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font: control.font
     }
 
     background: Rectangle {
-        radius: 8
-        color: control.down ? Theme.primaryPressedColor : Theme.primaryColor
+        radius: 4
+        color: !control.enabled ? Theme.primaryDisabledColor : control.down ? Theme.primaryPressedColor : control.hovered ? Theme.primaryHoverColor : Theme.primaryColor
         border.width: control.visualFocus ? 2 : 0
-        border.color: Theme.borderColor
+        border.color: Theme.primaryFocusBorderColor
     }
 }

@@ -2,14 +2,42 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <QColor>
 #include <QCoreApplication>
 #include <QDir>
-#include <QQuickItem>
+#include <QGuiApplication>
 #include <QQmlComponent>
 #include <QQmlEngine>
-#include <QUrl>
+#include <QQuickItem>
+#include <QStyleHints>
 #include <QTest>
+#include <QUrl>
+#include <algorithm>
+#include <cmath>
 #include <memory>
+
+namespace
+{
+
+qreal linearizedChannel(qreal channel)
+{
+    return channel <= 0.04045 ? channel / 12.92 : std::pow((channel + 0.055) / 1.055, 2.4);
+}
+
+qreal relativeLuminance(QColor const& color)
+{
+    return 0.2126 * linearizedChannel(color.redF()) + 0.7152 * linearizedChannel(color.greenF()) +
+           0.0722 * linearizedChannel(color.blueF());
+}
+
+qreal contrastRatio(QColor const& first, QColor const& second)
+{
+    auto const lighter = std::max(relativeLuminance(first), relativeLuminance(second));
+    auto const darker = std::min(relativeLuminance(first), relativeLuminance(second));
+    return (lighter + 0.05) / (darker + 0.05);
+}
+
+} // namespace
 
 class RapidControlsImportTest : public QObject
 {
@@ -32,9 +60,14 @@ private Q_SLOTS:
 
         auto* item = qobject_cast<QQuickItem*>(instance.get());
         QVERIFY(item != nullptr);
-        QCOMPARE(instance->property("text").toString(), QStringLiteral("Analyze"));
-        QVERIFY(item->implicitWidth() > 0.0);
-        QVERIFY(item->implicitHeight() > 0.0);
+        QCOMPARE(instance->property("buttonText").toString(), QStringLiteral("Analyze"));
+        QCOMPARE(instance->property("usesDarkAppearance").toBool(),
+                 QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+        QCOMPARE(instance->property("primaryButtonHeight").toDouble(), 32.0);
+        QCOMPARE(instance->property("textFieldHeight").toDouble(), 32.0);
+        QCOMPARE(instance->property("libraryIconSize").toInt(), 24);
+        QVERIFY(contrastRatio(instance->property("primaryColor").value<QColor>(),
+                              instance->property("primaryFocusBorderColor").value<QColor>()) >= 3.0);
     }
 };
 
