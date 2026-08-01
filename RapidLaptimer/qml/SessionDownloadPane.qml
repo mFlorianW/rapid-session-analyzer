@@ -10,7 +10,7 @@ import RapidLaptimer
 Pane {
     id: root
 
-    property alias sessionBrowser: browser
+    required property LaptimerSessionBrowser sessionBrowser
     property string connectButtonText: connectButton.text
     property string addressPlaceholderText: addressField.placeholderText
 
@@ -23,10 +23,6 @@ Pane {
         color: Theme.surfaceColor
         border.width: 1
         border.color: Theme.borderColor
-    }
-
-    LaptimerSessionBrowser {
-        id: browser
     }
 
     Column {
@@ -50,15 +46,15 @@ Pane {
 
                 width: parent.width - connectButton.width - parent.spacing
                 placeholderText: "http://rapid-rusty.local"
-                text: browser.laptimerAddress
-                onTextEdited: browser.laptimerAddress = text
+                text: root.sessionBrowser.laptimerAddress
+                onTextEdited: root.sessionBrowser.laptimerAddress = text
             }
 
             PrimaryButton {
                 id: connectButton
 
                 text: "Connect"
-                onClicked: browser.connectToLaptimer()
+                onClicked: root.sessionBrowser.connectToLaptimer()
             }
         }
 
@@ -70,7 +66,7 @@ Pane {
             height: Math.min(contentHeight, 320)
             clip: true
             spacing: 8
-            model: browser.availableSessions
+            model: root.sessionBrowser.availableSessions
 
             delegate: Rectangle {
                 required property var modelData
@@ -116,7 +112,7 @@ Pane {
                         id: downloadButton
 
                         text: "Download"
-                        onClicked: browser.downloadSession(modelData.id)
+                        onClicked: root.sessionBrowser.downloadSession(modelData.id)
                     }
                 }
             }
@@ -125,7 +121,7 @@ Pane {
         Label {
             width: parent.width
             wrapMode: Text.Wrap
-            text: browser.statusMessage
+            text: root.sessionBrowser.statusMessage
             color: Theme.textColor
             visible: text.length > 0
         }

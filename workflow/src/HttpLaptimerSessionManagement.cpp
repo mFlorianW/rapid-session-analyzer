@@ -12,6 +12,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QTimer>
+#include <cmath>
 
 namespace RapidSessionAnalyzer::Workflow
 {
@@ -73,12 +74,29 @@ std::expected<QVector<Common::SessionInfo>, QString> parseSessionInfos(QByteArra
         return std::unexpected(QStringLiteral("Failed to parse session list JSON: %1").arg(parseError.errorString()));
     }
 
-    if (!document.isArray()) {
-        return std::unexpected(QStringLiteral("Expected session list response to be a JSON array."));
+    if (!document.isObject()) {
+        return std::unexpected(QStringLiteral("Expected session list response to be a JSON object."));
+    }
+
+    QJsonObject const response = document.object();
+    QJsonValue const sessionsValue = response.value(QStringLiteral("sessions"));
+    if (!sessionsValue.isArray()) {
+        return std::unexpected(QStringLiteral("Expected session list response field 'sessions' to be a JSON array."));
+    }
+
+    QJsonValue const totalValue = response.value(QStringLiteral("total"));
+    if (!totalValue.isDouble()) {
+        return std::unexpected(QStringLiteral("Expected session list response field 'total' to be a number."));
     }
 
     QVector<Common::SessionInfo> sessionInfos;
-    QJsonArray const sessionInfoArray = document.array();
+    QJsonArray const sessionInfoArray = sessionsValue.toArray();
+    double const total = totalValue.toDouble();
+    if (total < 0 || std::floor(total) != total || total != static_cast<double>(sessionInfoArray.size())) {
+        return std::unexpected(
+            QStringLiteral("Expected session list response field 'total' to equal the number of 'sessions' entries."));
+    }
+
     sessionInfos.reserve(sessionInfoArray.size());
     for (QJsonValue const& value : sessionInfoArray) {
         if (!value.isObject()) {

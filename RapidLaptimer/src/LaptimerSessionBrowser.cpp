@@ -84,6 +84,16 @@ void updateAvailableSessions(QVariantList& currentValue, QVariantList nextValue,
     Q_EMIT browser.availableSessionsChanged();
 }
 
+void updateDownloadedSessions(QVariantList& currentValue, QVariantList nextValue, LaptimerSessionBrowser& browser)
+{
+    if (currentValue == nextValue) {
+        return;
+    }
+
+    currentValue = std::move(nextValue);
+    Q_EMIT browser.downloadedSessionsChanged();
+}
+
 } // namespace
 
 LaptimerSessionBrowser::LaptimerSessionBrowser(QObject* parent)
@@ -119,11 +129,18 @@ void LaptimerSessionBrowser::setSessionLibraryPath(QString sessionLibraryPath)
     }
 
     mSessionLibraryPath = std::move(sessionLibraryPath);
+    Q_EMIT sessionLibraryPathChanged();
+    refreshSessionLibrary();
 }
 
 QVariantList LaptimerSessionBrowser::availableSessions() const
 {
     return mAvailableSessions;
+}
+
+QVariantList LaptimerSessionBrowser::downloadedSessions() const
+{
+    return mDownloadedSessions;
 }
 
 QString LaptimerSessionBrowser::statusMessage() const
@@ -155,6 +172,30 @@ void LaptimerSessionBrowser::connectToLaptimer()
         *this);
 }
 
+std::expected<void, QString> LaptimerSessionBrowser::reloadSessionLibrary()
+{
+    if (mSessionLibraryPath.trimmed().isEmpty()) {
+        return std::unexpected(QStringLiteral("Session Library path must not be empty."));
+    }
+
+    Workflow::FilesystemStorage storage{QDir{mSessionLibraryPath}};
+    auto sessionInfos = storage.getSessionInfos();
+    if (!sessionInfos) {
+        return std::unexpected(sessionInfos.error());
+    }
+
+    updateDownloadedSessions(mDownloadedSessions, toVariantList(*sessionInfos), *this);
+    return {};
+}
+
+void LaptimerSessionBrowser::refreshSessionLibrary()
+{
+    auto result = reloadSessionLibrary();
+    if (!result) {
+        updateStatusMessage(mStatusMessage, result.error(), *this);
+    }
+}
+
 void LaptimerSessionBrowser::downloadSession(QString const& sessionId)
 {
     auto normalizedUrl = normalizeLaptimerUrl(mLaptimerAddress);
@@ -179,6 +220,12 @@ void LaptimerSessionBrowser::downloadSession(QString const& sessionId)
     auto storeResult = storage.store(sessionId, *session);
     if (!storeResult) {
         updateStatusMessage(mStatusMessage, storeResult.error(), *this);
+        return;
+    }
+
+    auto refreshedSessionLibrary = reloadSessionLibrary();
+    if (!refreshedSessionLibrary) {
+        updateStatusMessage(mStatusMessage, refreshedSessionLibrary.error(), *this);
         return;
     }
 

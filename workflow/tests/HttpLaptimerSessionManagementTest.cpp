@@ -33,6 +33,11 @@ public:
         mSessionInfos = std::move(sessionInfos);
     }
 
+    void setSessionInfoResponsePayload(QByteArray payload)
+    {
+        mSessionInfoResponsePayload = std::move(payload);
+    }
+
     void setSessionResponse(Common::Session session)
     {
         mSession = std::move(session);
@@ -58,10 +63,19 @@ private:
             QByteArray const path = requestLine.split(' ').value(1);
 
             if (path == "/v1/sessions") {
-                QJsonArray payload;
-                for (Common::SessionInfo const& sessionInfo : mSessionInfos) {
-                    payload.append(QJsonDocument::fromJson(Common::toJson(sessionInfo)).object());
+                if (!mSessionInfoResponsePayload.isEmpty()) {
+                    writeResponse(socket, mSessionInfoResponsePayload);
+                    return;
                 }
+
+                QJsonArray sessions;
+                for (Common::SessionInfo const& sessionInfo : mSessionInfos) {
+                    sessions.append(QJsonDocument::fromJson(Common::toJson(sessionInfo)).object());
+                }
+                QJsonObject const payload{
+                    {QStringLiteral("total"), sessions.size()},
+                    {QStringLiteral("sessions"), sessions},
+                };
                 writeResponse(socket, QJsonDocument{payload}.toJson(QJsonDocument::Compact));
                 return;
             }
@@ -88,6 +102,7 @@ private:
 
     QTcpServer mServer;
     QVector<Common::SessionInfo> mSessionInfos;
+    QByteArray mSessionInfoResponsePayload;
     Common::Session mSession;
 };
 
@@ -124,6 +139,37 @@ private Q_SLOTS:
 
         QVERIFY(session.has_value());
         QCOMPARE(*session, TestHelper::oscherslebenSession());
+    }
+
+    void rejectsSessionListWithMismatchedTotal()
+    {
+        FakeLaptimerServer server;
+        QVERIFY2(server.listen(), "Expected fake laptimer server to start.");
+        server.setSessionInfoResponsePayload(
+            QByteArrayLiteral(R"({"total":1,"sessions":[]})"));
+
+        Workflow::HttpLaptimerSessionManagement sessionManagement{server.baseUrl()};
+
+        auto sessionInfos = sessionManagement.getSessionInfos();
+
+        QVERIFY(!sessionInfos.has_value());
+        QCOMPARE(
+            sessionInfos.error(),
+            QStringLiteral("Expected session list response field 'total' to equal the number of 'sessions' entries."));
+    }
+
+    void rejectsLegacyTopLevelSessionArray()
+    {
+        FakeLaptimerServer server;
+        QVERIFY2(server.listen(), "Expected fake laptimer server to start.");
+        server.setSessionInfoResponsePayload(QByteArrayLiteral("[]"));
+
+        Workflow::HttpLaptimerSessionManagement sessionManagement{server.baseUrl()};
+
+        auto sessionInfos = sessionManagement.getSessionInfos();
+
+        QVERIFY(!sessionInfos.has_value());
+        QCOMPARE(sessionInfos.error(), QStringLiteral("Expected session list response to be a JSON object."));
     }
 };
 

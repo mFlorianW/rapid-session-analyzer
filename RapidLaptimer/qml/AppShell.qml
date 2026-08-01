@@ -14,6 +14,26 @@ ApplicationWindow {
     height: 768
     title: qsTr("Rapid Session Analyzer")
 
+    LaptimerSessionBrowser {
+        id: sharedSessionBrowser
+    }
+
+    Component {
+        id: sessionLibraryPane
+
+        SessionLibraryPane {
+            sessionBrowser: sharedSessionBrowser
+        }
+    }
+
+    Component {
+        id: sessionDownloadPane
+
+        SessionDownloadPane {
+            sessionBrowser: sharedSessionBrowser
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
@@ -33,8 +53,8 @@ ApplicationWindow {
 
             Label { text: qsTr("Navigation"); font.bold: true }
 
-            Button { text: qsTr("Session Library"); onClicked: stackView.push("SessionLibraryPane.qml") }
-            Button { text: qsTr("Download Sessions"); onClicked: stackView.push("SessionDownloadPane.qml") }
+            Button { text: qsTr("Session Library"); onClicked: stackView.push(sessionLibraryPane) }
+            Button { text: qsTr("Download Sessions"); onClicked: stackView.push(sessionDownloadPane) }
             Button { text: qsTr("About"); onClicked: stackView.push("AboutPane.qml") }
         }
     }
@@ -50,6 +70,6 @@ ApplicationWindow {
     StackView {
         id: stackView
         anchors.fill: parent
-        initialItem: "SessionLibraryPane.qml"
+        initialItem: sessionLibraryPane
     }
 }
