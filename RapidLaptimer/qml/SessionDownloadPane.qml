@@ -13,13 +13,17 @@ Pane {
     required property LaptimerSessionBrowser sessionBrowser
     property string connectButtonText: connectButton.text
     property string addressPlaceholderText: addressField.placeholderText
+    property string addressInputAccessibleName: addressField.Accessible.name
+    property string connectCommandAccessibleName: connectButton.Accessible.name
+    property string sessionListAccessibleName: sessionList.Accessible.name
+    property string statusFeedbackAccessibleName: statusFeedback.Accessible.name
 
     implicitWidth: 640
-    implicitHeight: contentColumn.implicitHeight + 32
-    padding: 16
+    implicitHeight: contentColumn.implicitHeight + Theme.spacingLarge * 2
+    padding: Theme.spacingLarge
 
     background: Rectangle {
-        radius: 12
+        radius: 4
         color: Theme.surfaceColor
         border.width: 1
         border.color: Theme.borderColor
@@ -28,10 +32,10 @@ Pane {
     Column {
         id: contentColumn
         width: parent.width
-        spacing: 12
+        spacing: Theme.spacingMedium
 
         Label {
-            text: "Download Sessions"
+            text: qsTr("Download Sessions")
             font.bold: true
             font.pointSize: 14
             color: Theme.textColor
@@ -39,22 +43,24 @@ Pane {
 
         Row {
             width: parent.width
-            spacing: 8
+            spacing: Theme.spacingSmall
 
-            TextField {
+            FluentTextField {
                 id: addressField
 
                 width: parent.width - connectButton.width - parent.spacing
-                placeholderText: "http://rapid-rusty.local"
+                placeholderText: qsTr("http://rapid-rusty.local")
                 text: root.sessionBrowser.laptimerAddress
                 onTextEdited: root.sessionBrowser.laptimerAddress = text
+                Accessible.name: qsTr("Laptimer address")
             }
 
             PrimaryButton {
                 id: connectButton
 
-                text: "Connect"
+                text: qsTr("Connect")
                 onClicked: root.sessionBrowser.connectToLaptimer()
+                Accessible.name: qsTr("Connect to Laptimer")
             }
         }
 
@@ -65,30 +71,25 @@ Pane {
             implicitHeight: contentHeight
             height: Math.min(contentHeight, 320)
             clip: true
-            spacing: 8
+            spacing: Theme.spacingSmall
             model: root.sessionBrowser.availableSessions
+            Accessible.name: qsTr("Available Sessions")
 
-            delegate: Rectangle {
+            delegate: FluentListItem {
                 required property var modelData
 
                 width: sessionList.width
-                radius: 8
-                color: Theme.surfaceMutedColor
-                border.width: 1
-                border.color: Theme.borderColor
-                implicitHeight: sessionRow.implicitHeight + 16
+                implicitHeight: sessionRow.implicitHeight + Theme.spacingMedium
 
                 Row {
                     id: sessionRow
 
-                    x: 8
-                    y: 8
-                    width: parent.width - 16
-                    spacing: 8
+                    width: parent.width
+                    spacing: Theme.spacingSmall
 
                     Column {
                         width: parent.width - downloadButton.width - sessionRow.spacing
-                        spacing: 2
+                        spacing: Theme.spacingExtraSmall
 
                         Label {
                             text: modelData.trackName
@@ -97,7 +98,7 @@ Pane {
                         }
 
                         Label {
-                            text: modelData.date + " - " + modelData.laps + " lap(s)"
+                            text: qsTr("%1 - %2 lap(s)").arg(modelData.date).arg(modelData.laps)
                             color: Theme.textColor
                         }
 
@@ -111,19 +112,20 @@ Pane {
                     PrimaryButton {
                         id: downloadButton
 
-                        text: "Download"
+                        text: qsTr("Download")
                         onClicked: root.sessionBrowser.downloadSession(modelData.id)
+                        Accessible.name: qsTr("Download Session %1").arg(modelData.id)
                     }
                 }
             }
         }
 
-        Label {
+        FluentStatusMessage {
+            id: statusFeedback
+
             width: parent.width
-            wrapMode: Text.Wrap
-            text: root.sessionBrowser.statusMessage
-            color: Theme.textColor
-            visible: text.length > 0
+            message: root.sessionBrowser.statusMessage
+            Accessible.name: qsTr("Laptimer status")
         }
     }
 }

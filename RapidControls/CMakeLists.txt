@@ -11,6 +11,8 @@ qt_add_qml_module(RapidControls
     QML_FILES
         qml/DialogSurface.qml
         qml/FluentIcon.qml
+        qml/FluentListItem.qml
+        qml/FluentStatusMessage.qml
         qml/FluentTextField.qml
         qml/PrimaryButton.qml
         qml/Theme.qml
