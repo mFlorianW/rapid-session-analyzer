@@ -13,6 +13,7 @@ target_sources(RapidSessionAnalyzerWorkflow PRIVATE
 
     src/FilesystemStorage.cpp
     src/HttpLaptimerSessionManagement.cpp
+    src/SessionAnalyzer.cpp
 )
 
 target_include_directories(RapidSessionAnalyzerWorkflow
@@ -40,6 +41,22 @@ if(ENABLE_TEST)
     add_executable(test_workflow_filesystem_storage tests/FilesystemStorageTest.cpp)
     add_test(NAME test_workflow_filesystem_storage COMMAND test_workflow_filesystem_storage)
     target_link_libraries(test_workflow_filesystem_storage PRIVATE
+        Qt6::Test
+        RapidSessionAnalyzer::Workflow
+        RapidSessionAnalyzer::TestHelper
+    )
+
+    add_executable(test_workflow_session_analyzer tests/SessionAnalyzerTest.cpp)
+    add_test(NAME test_workflow_session_analyzer COMMAND test_workflow_session_analyzer)
+    target_link_libraries(test_workflow_session_analyzer PRIVATE
+        Qt6::Test
+        RapidSessionAnalyzer::Workflow
+        RapidSessionAnalyzer::TestHelper
+    )
+
+    add_executable(test_workflow_session_analyzer_compare tests/SessionAnalyzerCompareTest.cpp)
+    add_test(NAME test_workflow_session_analyzer_compare COMMAND test_workflow_session_analyzer_compare)
+    target_link_libraries(test_workflow_session_analyzer_compare PRIVATE
         Qt6::Test
         RapidSessionAnalyzer::Workflow
         RapidSessionAnalyzer::TestHelper
