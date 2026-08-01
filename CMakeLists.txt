@@ -76,5 +76,6 @@ add_subdirectory(common)
 add_subdirectory(testhelper)
 add_subdirectory(workflow)
 add_subdirectory(RapidControls)
+add_subdirectory(RapidLaptimer)
 
 feature_summary(WHAT ALL)
