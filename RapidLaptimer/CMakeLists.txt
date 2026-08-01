@@ -7,6 +7,7 @@ qt_add_qml_module(RapidLaptimer
     OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml/RapidLaptimer"
     STATIC
     QML_FILES
+        qml/AboutPane.qml
         qml/SessionDownloadPane.qml
         qml/AppShell.qml
         qml/SessionLibraryPane.qml
