@@ -39,6 +39,7 @@ ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
 find_package(Qt6 REQUIRED COMPONENTS
     Core
+    Network
     Qml
     Quick
     QuickControls2
@@ -75,5 +76,6 @@ add_subdirectory(common)
 add_subdirectory(testhelper)
 add_subdirectory(workflow)
 add_subdirectory(RapidControls)
+add_subdirectory(RapidLaptimer)
 
 feature_summary(WHAT ALL)
