@@ -39,6 +39,7 @@ ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
 find_package(Qt6 REQUIRED COMPONENTS
     Core
+    Network
     Qml
     Quick
     QuickControls2
