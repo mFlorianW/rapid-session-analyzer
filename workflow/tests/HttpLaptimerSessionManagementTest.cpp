@@ -10,7 +10,7 @@
 #include <QTcpSocket>
 #include <QTest>
 #include <TestHelper/SessionSamples.hpp>
-#include <Workflow/HttpDeviceSessionManagement.hpp>
+#include <Workflow/HttpLaptimerSessionManagement.hpp>
 
 using namespace RapidSessionAnalyzer;
 
@@ -93,7 +93,7 @@ private:
 
 } // namespace
 
-class HttpDeviceSessionManagementTest : public QObject
+class HttpLaptimerSessionManagementTest : public QObject
 {
     Q_OBJECT
 
@@ -104,7 +104,7 @@ private Q_SLOTS:
         QVERIFY2(server.listen(), "Expected fake laptimer server to start.");
         server.setSessionInfoResponses({TestHelper::oscherslebenSessionInfo()});
 
-        Workflow::HttpDeviceSessionManagement sessionManagement{server.baseUrl()};
+        Workflow::HttpLaptimerSessionManagement sessionManagement{server.baseUrl()};
 
         auto sessionInfos = sessionManagement.getSessionInfos();
 
@@ -118,7 +118,7 @@ private Q_SLOTS:
         QVERIFY2(server.listen(), "Expected fake laptimer server to start.");
         server.setSessionResponse(TestHelper::oscherslebenSession());
 
-        Workflow::HttpDeviceSessionManagement sessionManagement{server.baseUrl()};
+        Workflow::HttpLaptimerSessionManagement sessionManagement{server.baseUrl()};
 
         auto session = sessionManagement.load(TestHelper::oscherslebenSessionInfo().id);
 
@@ -127,5 +127,5 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(HttpDeviceSessionManagementTest)
-#include "HttpDeviceSessionManagementTest.moc"
+QTEST_MAIN(HttpLaptimerSessionManagementTest)
+#include "HttpLaptimerSessionManagementTest.moc"

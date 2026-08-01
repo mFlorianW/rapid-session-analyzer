@@ -5,7 +5,7 @@
 #include <RapidLaptimer/LaptimerSessionBrowser.hpp>
 
 #include <Workflow/FilesystemStorage.hpp>
-#include <Workflow/HttpDeviceSessionManagement.hpp>
+#include <Workflow/HttpLaptimerSessionManagement.hpp>
 #include <QDir>
 #include <QStandardPaths>
 #include <QVariantMap>
@@ -29,6 +29,10 @@ std::expected<QUrl, QString> normalizeLaptimerUrl(QStringView address)
     QUrl const url{candidate};
     if (!url.isValid() || url.scheme().isEmpty() || url.host().isEmpty()) {
         return std::unexpected(QStringLiteral("Laptimer address '%1' is not a valid HTTP address.").arg(address));
+    }
+
+    if (url.scheme() != QStringLiteral("http") && url.scheme() != QStringLiteral("https")) {
+        return std::unexpected(QStringLiteral("Laptimer address '%1' must use http or https.").arg(address));
     }
 
     return url;
@@ -115,7 +119,6 @@ void LaptimerSessionBrowser::setSessionLibraryPath(QString sessionLibraryPath)
     }
 
     mSessionLibraryPath = std::move(sessionLibraryPath);
-    Q_EMIT sessionLibraryPathChanged();
 }
 
 QVariantList LaptimerSessionBrowser::availableSessions() const
@@ -137,7 +140,7 @@ void LaptimerSessionBrowser::connectToLaptimer()
         return;
     }
 
-    Workflow::HttpDeviceSessionManagement sessionManagement{*normalizedUrl};
+    Workflow::HttpLaptimerSessionManagement sessionManagement{*normalizedUrl};
     auto sessionInfos = sessionManagement.getSessionInfos();
     if (!sessionInfos) {
         updateAvailableSessions(mAvailableSessions, {}, *this);
@@ -165,7 +168,7 @@ void LaptimerSessionBrowser::downloadSession(QString const& sessionId)
         return;
     }
 
-    Workflow::HttpDeviceSessionManagement sessionManagement{*normalizedUrl};
+    Workflow::HttpLaptimerSessionManagement sessionManagement{*normalizedUrl};
     auto session = sessionManagement.load(sessionId);
     if (!session) {
         updateStatusMessage(mStatusMessage, session.error(), *this);

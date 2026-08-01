@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <Workflow/HttpDeviceSessionManagement.hpp>
+#include <Workflow/HttpLaptimerSessionManagement.hpp>
 
 #include <Common/Json.hpp>
 #include <QEventLoop>
@@ -113,22 +113,22 @@ QUrl endpointUrl(QUrl baseUrl, QStringView path)
 
 } // namespace
 
-HttpDeviceSessionManagement::HttpDeviceSessionManagement(QUrl baseUrl, int requestTimeoutMs)
-    : HttpDeviceSessionManagement(std::move(baseUrl), new QNetworkAccessManager, requestTimeoutMs)
+HttpLaptimerSessionManagement::HttpLaptimerSessionManagement(QUrl baseUrl, int requestTimeoutMs)
+    : HttpLaptimerSessionManagement(std::move(baseUrl), new QNetworkAccessManager, requestTimeoutMs)
 {
     mOwnedNetworkAccessManager.reset(mNetworkAccessManager);
 }
 
-HttpDeviceSessionManagement::HttpDeviceSessionManagement(QUrl baseUrl,
-                                                         QNetworkAccessManager* networkAccessManager,
-                                                         int requestTimeoutMs)
+HttpLaptimerSessionManagement::HttpLaptimerSessionManagement(QUrl baseUrl,
+                                                             QNetworkAccessManager* networkAccessManager,
+                                                             int requestTimeoutMs)
     : mBaseUrl(std::move(baseUrl))
     , mNetworkAccessManager(networkAccessManager)
     , mRequestTimeoutMs(requestTimeoutMs)
 {
 }
 
-std::expected<QVector<Common::SessionInfo>, QString> HttpDeviceSessionManagement::getSessionInfos() const
+std::expected<QVector<Common::SessionInfo>, QString> HttpLaptimerSessionManagement::getSessionInfos() const
 {
     if (mNetworkAccessManager == nullptr) {
         return std::unexpected(QStringLiteral("No network access manager configured."));
@@ -142,7 +142,7 @@ std::expected<QVector<Common::SessionInfo>, QString> HttpDeviceSessionManagement
     return parseSessionInfos(*payload);
 }
 
-std::expected<Common::Session, QString> HttpDeviceSessionManagement::load(QStringView sessionId) const
+std::expected<Common::Session, QString> HttpLaptimerSessionManagement::load(QStringView sessionId) const
 {
     if (mNetworkAccessManager == nullptr) {
         return std::unexpected(QStringLiteral("No network access manager configured."));

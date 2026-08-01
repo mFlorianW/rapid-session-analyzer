@@ -19,7 +19,6 @@ class LaptimerSessionBrowser : public QObject
     QML_ELEMENT
 
     Q_PROPERTY(QString laptimerAddress READ laptimerAddress WRITE setLaptimerAddress NOTIFY laptimerAddressChanged FINAL)
-    Q_PROPERTY(QString sessionLibraryPath READ sessionLibraryPath WRITE setSessionLibraryPath NOTIFY sessionLibraryPathChanged FINAL)
     Q_PROPERTY(QVariantList availableSessions READ availableSessions NOTIFY availableSessionsChanged FINAL)
     Q_PROPERTY(QString statusMessage READ statusMessage NOTIFY statusMessageChanged FINAL)
 
@@ -40,7 +39,6 @@ public:
 
 Q_SIGNALS:
     void laptimerAddressChanged();
-    void sessionLibraryPathChanged();
     void availableSessionsChanged();
     void statusMessageChanged();
 

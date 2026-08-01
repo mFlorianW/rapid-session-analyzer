@@ -7,12 +7,12 @@ add_library(RapidSessionAnalyzer::Workflow ALIAS RapidSessionAnalyzerWorkflow)
 
 target_sources(RapidSessionAnalyzerWorkflow PRIVATE
     include/Workflow/FilesystemStorage.hpp
-    include/Workflow/HttpDeviceSessionManagement.hpp
-    include/Workflow/IDeviceSessionManagement.hpp
+    include/Workflow/HttpLaptimerSessionManagement.hpp
+    include/Workflow/ILaptimerSessionManagement.hpp
     include/Workflow/ISessionStorage.hpp
 
     src/FilesystemStorage.cpp
-    src/HttpDeviceSessionManagement.cpp
+    src/HttpLaptimerSessionManagement.cpp
 )
 
 target_include_directories(RapidSessionAnalyzerWorkflow
@@ -28,9 +28,9 @@ target_link_libraries(RapidSessionAnalyzerWorkflow
 )
 
 if(ENABLE_TEST)
-    add_executable(test_workflow_http_device_session_management tests/HttpDeviceSessionManagementTest.cpp)
-    add_test(NAME test_workflow_http_device_session_management COMMAND test_workflow_http_device_session_management)
-    target_link_libraries(test_workflow_http_device_session_management PRIVATE
+    add_executable(test_workflow_http_laptimer_session_management tests/HttpLaptimerSessionManagementTest.cpp)
+    add_test(NAME test_workflow_http_laptimer_session_management COMMAND test_workflow_http_laptimer_session_management)
+    target_link_libraries(test_workflow_http_laptimer_session_management PRIVATE
         Qt6::Network
         Qt6::Test
         RapidSessionAnalyzer::Workflow

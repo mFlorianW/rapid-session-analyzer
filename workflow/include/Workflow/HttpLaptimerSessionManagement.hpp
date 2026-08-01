@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#ifndef RAPIDSESSIONANALYZER_WORKFLOW_HTTPDEVICESESSIONMANAGEMENT_HPP
-#define RAPIDSESSIONANALYZER_WORKFLOW_HTTPDEVICESESSIONMANAGEMENT_HPP
+#ifndef RAPIDSESSIONANALYZER_WORKFLOW_HTTPLAPTIMERSESSIONMANAGEMENT_HPP
+#define RAPIDSESSIONANALYZER_WORKFLOW_HTTPLAPTIMERSESSIONMANAGEMENT_HPP
 
-#include <Workflow/IDeviceSessionManagement.hpp>
+#include <Workflow/ILaptimerSessionManagement.hpp>
 #include <QNetworkAccessManager>
 #include <QScopedPointer>
 #include <QUrl>
@@ -13,11 +13,11 @@
 namespace RapidSessionAnalyzer::Workflow
 {
 
-class HttpDeviceSessionManagement final : public IDeviceSessionManagement
+class HttpLaptimerSessionManagement final : public ILaptimerSessionManagement
 {
 public:
-    explicit HttpDeviceSessionManagement(QUrl baseUrl, int requestTimeoutMs = 5000);
-    HttpDeviceSessionManagement(QUrl baseUrl, QNetworkAccessManager* networkAccessManager, int requestTimeoutMs = 5000);
+    explicit HttpLaptimerSessionManagement(QUrl baseUrl, int requestTimeoutMs = 5000);
+    HttpLaptimerSessionManagement(QUrl baseUrl, QNetworkAccessManager* networkAccessManager, int requestTimeoutMs = 5000);
 
     [[nodiscard]] std::expected<QVector<Common::SessionInfo>, QString> getSessionInfos() const override;
     [[nodiscard]] std::expected<Common::Session, QString> load(QStringView sessionId) const override;
@@ -31,4 +31,4 @@ private:
 
 } // namespace RapidSessionAnalyzer::Workflow
 
-#endif // RAPIDSESSIONANALYZER_WORKFLOW_HTTPDEVICESESSIONMANAGEMENT_HPP
+#endif // RAPIDSESSIONANALYZER_WORKFLOW_HTTPLAPTIMERSESSIONMANAGEMENT_HPP

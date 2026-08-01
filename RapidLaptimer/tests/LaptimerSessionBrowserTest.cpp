@@ -111,6 +111,17 @@ private Q_SLOTS:
         QVERIFY(file.open(QIODevice::ReadOnly));
         QCOMPARE(file.readAll(), Common::toJson(TestHelper::oscherslebenSession()));
     }
+
+    void rejectsNonHttpAddresses()
+    {
+        RapidLaptimer::LaptimerSessionBrowser browser;
+        browser.setLaptimerAddress(QStringLiteral("ftp://rapid-rusty.local"));
+
+        browser.connectToLaptimer();
+
+        QCOMPARE(browser.statusMessage(), QStringLiteral("Laptimer address 'ftp://rapid-rusty.local' must use http or https."));
+        QVERIFY(browser.availableSessions().isEmpty());
+    }
 };
 
 QTEST_MAIN(LaptimerSessionBrowserTest)
