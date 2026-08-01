@@ -82,6 +82,8 @@ ApplicationWindow {
             display: compact ? AbstractButton.IconOnly : AbstractButton.TextBesideIcon
             implicitWidth: compact ? 40 : 216
             implicitHeight: 40
+            checkable: true
+            checked: selected
             onClicked: app.navigateTo(destination)
             Accessible.name: qsTr(label)
 
