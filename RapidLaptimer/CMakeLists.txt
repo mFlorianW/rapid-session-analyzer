@@ -8,6 +8,8 @@ qt_add_qml_module(RapidLaptimer
     STATIC
     QML_FILES
         qml/SessionDownloadPane.qml
+        qml/AppShell.qml
+        qml/SessionLibraryPane.qml
     SOURCES
         include/RapidLaptimer/LaptimerSessionBrowser.hpp
         src/LaptimerSessionBrowser.cpp
@@ -58,5 +60,23 @@ if(ENABLE_TEST)
         Qt6::Test
         RapidLaptimer
         RapidSessionAnalyzer::TestHelper
+    )
+
+    add_executable(test_rapid_laptimer_session_library tests/SessionLibraryPaneTest.cpp)
+    add_test(NAME test_rapid_laptimer_session_library COMMAND test_rapid_laptimer_session_library)
+    target_link_libraries(test_rapid_laptimer_session_library PRIVATE
+        Qt6::Qml
+        Qt6::Quick
+        Qt6::QuickControls2
+        Qt6::Test
+        RapidControls
+        RapidControlsplugin
+        RapidLaptimer
+        RapidLaptimerplugin
+        RapidSessionAnalyzer::TestHelper
+    )
+    qt_import_qml_plugins(test_rapid_laptimer_session_library)
+    set_tests_properties(test_rapid_laptimer_session_library PROPERTIES
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
     )
 endif()

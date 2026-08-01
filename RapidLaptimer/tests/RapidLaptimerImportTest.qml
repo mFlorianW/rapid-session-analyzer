@@ -6,4 +6,6 @@ import QtQuick
 import RapidLaptimer
 
 SessionDownloadPane {
+    sessionBrowser: LaptimerSessionBrowser {
+    }
 }

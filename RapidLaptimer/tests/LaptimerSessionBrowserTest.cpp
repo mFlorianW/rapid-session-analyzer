@@ -50,8 +50,12 @@ private:
             QByteArray const path = requestLine.split(' ').value(1);
 
             if (path == "/v1/sessions") {
-                QJsonArray payload;
-                payload.append(QJsonDocument::fromJson(Common::toJson(TestHelper::oscherslebenSessionInfo())).object());
+                QJsonArray sessions;
+                sessions.append(QJsonDocument::fromJson(Common::toJson(TestHelper::oscherslebenSessionInfo())).object());
+                QJsonObject const payload{
+                    {QStringLiteral("total"), sessions.size()},
+                    {QStringLiteral("sessions"), sessions},
+                };
                 writeResponse(socket, QJsonDocument{payload}.toJson(QJsonDocument::Compact));
                 return;
             }
@@ -110,6 +114,11 @@ private Q_SLOTS:
         QFile file{temporaryDir.filePath(QStringLiteral("%1.json").arg(TestHelper::oscherslebenSessionId()))};
         QVERIFY(file.open(QIODevice::ReadOnly));
         QCOMPARE(file.readAll(), Common::toJson(TestHelper::oscherslebenSession()));
+
+        QVariantList const downloadedSessions = browser.downloadedSessions();
+        QCOMPARE(downloadedSessions.size(), 1);
+        QCOMPARE(downloadedSessions.front().toMap().value(QStringLiteral("id")).toString(),
+                 TestHelper::oscherslebenSessionId());
     }
 
     void rejectsNonHttpAddresses()
