@@ -15,7 +15,9 @@ target_link_libraries(rapid_session_analyzer
         Qt6::Quick
         Qt6::QuickControls2
         RapidSessionAnalyzer::RapidLaptimer
+        RapidSessionAnalyzer::RapidLaptimerPlugin
         RapidSessionAnalyzer::Controls
+        RapidSessionAnalyzer::ControlsPlugin
 )
 
 qt_import_qml_plugins(rapid_session_analyzer)
